@@ -1,0 +1,155 @@
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <cstdlib>
+#include <stdio.h>
+#include <ctype.h>
+
+
+using namespace std;
+
+struct fraction
+{
+    int nominator;
+    int denominator;
+
+};
+int euclid (int a, int b){
+    if (a == 0) return b;
+    if (b ==0) return a;
+    return(euclid(b, a%b));
+
+}
+fraction get_frac(int nom, int denom){
+    fraction fr;
+    fr.nominator = nom;
+    fr.denominator = denom;
+    return fr;
+}
+fraction cutter(fraction f){
+    int gcd = euclid(f.nominator, f.denominator);
+    f.nominator /= gcd; f.denominator /= gcd;
+    return f;
+}
+fraction operator+ (fraction x, fraction y){
+    fraction sum;
+    sum.nominator = x.nominator*y.denominator + x.denominator*y.nominator;
+    sum.denominator = x.denominator*y.denominator;
+    sum = cutter(sum);
+    return sum;
+}
+
+fraction operator- (fraction x, fraction y){
+    fraction subtract;
+    subtract.nominator = x.nominator*y.denominator - x.denominator*y.nominator;
+    subtract.denominator = x.denominator*y.denominator;
+    subtract = cutter(subtract);
+    return subtract;
+}
+fraction operator* (fraction x, fraction y){
+    fraction multiply;
+    multiply.nominator = x.nominator*y.nominator;
+    multiply.denominator = x.denominator*y.denominator;
+    multiply = cutter(multiply);
+    return multiply;
+}
+fraction operator/ (fraction x, fraction y){
+    fraction divide;
+    divide.nominator = x.nominator*y.denominator;
+    divide.denominator = x.denominator*y.nominator;
+    divide = cutter(divide);
+    return divide;
+}
+bool operator> (fraction x, fraction y){
+    x = cutter(x);
+    y = cutter(y);
+    int a = x.nominator*y.denominator;
+    int b = x.denominator*y.nominator;
+    if (a>b) return true;
+    return false; // <, ==
+}
+bool operator== (fraction x, fraction y){
+    x = cutter(x);
+    y = cutter(y);
+    if((x.denominator == y. denominator)&&(x.nominator == y. nominator)) return true;
+    return false;
+}
+bool operator< (fraction x, fraction y){
+    x = cutter(x);
+    y = cutter(y);
+    int a = x.nominator*y.denominator;
+    int b = x.denominator*y.nominator;
+    if (a<b) return true;
+    return false; // <, ==
+}
+bool operator<=(fraction x, fraction y){
+    if (x==y) return true;
+    return (x<y);
+}
+bool operator>=(fraction x, fraction y){
+    if (x==y) return true;
+    return x>y;
+}
+void frac_test(){
+    int a, b, c, d;
+    cout <<"enter 4 numbers:"<<endl;
+    cin >> a >> b >>c >> d;
+    fraction x =get_frac(a, b);
+    fraction y = get_frac(c, d);
+    fraction z = x+y;
+    cout <<"sum="<<z.nominator <<'/'<<z.denominator<< endl;
+    z = x-y;
+    cout <<"subt="<<z.nominator <<'/'<<z.denominator<< endl;
+    z = x*y;
+    cout <<"mult="<<z.nominator <<'/'<<z.denominator<< endl;
+    z = x/y;
+    cout<<"div="<<z.nominator <<'/'<<z.denominator<< endl;
+    bool res = x>y;
+    cout <<"x>y "<<res<<endl;
+    res = x<y;
+    cout <<"x<y "<<res<<endl;
+    res = x==y;
+    cout <<"x==y "<<res<<endl;
+    res = x>=y;
+    cout <<"x>=y "<<res<<endl;
+    res = x<=y;
+    cout <<"x<=y "<<res<<endl;
+}
+void sum_replace(){
+    string s;
+    getline(cin, s);
+    string a="", b="";
+    unsigned int j=0, k=0;
+    int x, y;
+    for(int i=0;i<s.size();++i){
+        if (isdigit(s[i])){
+            k=i;       //запоминаем индекс, с которого начинается первое число
+            while (isdigit(s[i]))
+                {a+=s[i]; ++j; ++i; }
+        if((s[i]=='+')&&(isdigit(s[i+1]))){
+            j=0;
+            ++i;
+            while (isdigit(s[i]))
+            {b+=s[i]; ++j; ++i;}}
+        x = stoi(a); // конвертирует строку в целое число
+        y = stoi(b);
+        x +=y;
+        a = to_string(x);
+        s.replace(k, i-k, a);
+        i=k+a.size()-1;
+        a="";
+        b="";
+
+    }}
+    cout<<s;
+
+
+}
+
+
+
+int main() {
+    //frac_test();
+    sum_replace();
+    return 0;
+}
